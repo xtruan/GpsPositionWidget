@@ -28,9 +28,9 @@ class GpsPositionView extends Ui.View {
         Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
         deviceSettings = Sys.getDeviceSettings();
         deviceId = Ui.loadResource(Rez.Strings.DeviceId);
-        if (deviceId.equals("vivoactive_hr")) {
-            showLabels = false;
-        }
+//        if (deviceId.equals("vivoactive_hr")) {
+//            showLabels = false;
+//        }
     }
 
     //! Update the view
