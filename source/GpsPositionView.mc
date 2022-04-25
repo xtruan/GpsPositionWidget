@@ -8,9 +8,9 @@ using Toybox.Timer;
 
 class GpsPositionView extends Ui.View {
 
-    hidden var posInfo = null;
+    //hidden var posInfo = null;
     hidden var deviceSettings = null;
-    hidden var deviceId = null;
+    //hidden var deviceId = null;
     hidden var showLabels = true;
     hidden var progressTimer = null;
     hidden var progressDots = "";
@@ -26,28 +26,28 @@ class GpsPositionView extends Ui.View {
     }
     
     function updateProgress() {
-	    progressDots = progressDots + ".";
-	    if (progressDots.length() > 3) {
-	    	progressDots = "";
-	    }
-	    Ui.requestUpdate();
-	}
+        progressDots = progressDots + ".";
+        if (progressDots.length() > 3) {
+            progressDots = "";
+        }
+        Ui.requestUpdate();
+    }
 
     function onHide() {
-        Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
+        //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
     }
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {
-        Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
+        //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
         deviceSettings = Sys.getDeviceSettings();
-        deviceId = Ui.loadResource(Rez.Strings.DeviceId);
-//        if (deviceId.equals("vivoactive_hr")) {
-//            showLabels = false;
-//        }
+        //deviceId = Ui.loadResource(Rez.Strings.DeviceId);
     }
 
     //! Update the view
     function onUpdate(dc as Dc) {
+        // Get position
+        var posInfo = App.getApp().getCurrentPosition();
+    
         // holders for position data
         var navStringTop = "";
         var navStringBot = "";
@@ -73,6 +73,9 @@ class GpsPositionView extends Ui.View {
         dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
         
         if( posInfo != null ) {
+            if (progressTimer != null) {
+                progressTimer.stop();
+            }
             if (posInfo.accuracy == Pos.QUALITY_GOOD) {
                 dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
             } else if (posInfo.accuracy == Pos.QUALITY_USABLE) {
@@ -182,13 +185,13 @@ class GpsPositionView extends Ui.View {
             
             // display navigation (position) string
             if (navStringBot.length() != 0) {
-            	pos = pos + Gfx.getFontHeight(Gfx.FONT_SMALL);
+                pos = pos + Gfx.getFontHeight(Gfx.FONT_SMALL);
                 dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_MEDIUM, navStringTop, Gfx.TEXT_JUSTIFY_CENTER );
                 pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - 6;
                 dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_MEDIUM, navStringBot, Gfx.TEXT_JUSTIFY_CENTER );
             }
             else {
-            	pos = pos + Gfx.getFontHeight(Gfx.FONT_SMALL);
+                pos = pos + Gfx.getFontHeight(Gfx.FONT_SMALL);
                 dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_MEDIUM, navStringTop, Gfx.TEXT_JUSTIFY_CENTER );
                 pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - 6;
             }
@@ -220,9 +223,9 @@ class GpsPositionView extends Ui.View {
                 string = "";
             }
             if (deviceSettings.distanceUnits == Sys.UNIT_METRIC) {
-            	string = string + altMeters.format("%.1f") + " m";
+                string = string + altMeters.format("%.1f") + " m";
             } else { // deviceSettings.distanceUnits == Sys.UNIT_STATUTE
-            	string = string + altFeet.format("%.1f") + " ft";
+                string = string + altFeet.format("%.1f") + " ft";
             }
             pos = pos + Gfx.getFontHeight(Gfx.FONT_TINY);
             dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
@@ -256,14 +259,5 @@ class GpsPositionView extends Ui.View {
             dc.drawText( (dc.getWidth() / 2), (dc.getHeight() / 2), Gfx.FONT_SMALL, "Position unavailable", Gfx.TEXT_JUSTIFY_CENTER );
         }
         
-    }
-
-    // position change callback
-    function onPosition(info) {
-        if (progressTimer != null) {
-            progressTimer.stop();
-        }
-        posInfo = info;
-        Ui.requestUpdate();
     }
 }

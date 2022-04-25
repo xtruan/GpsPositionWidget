@@ -8,5 +8,7 @@ Simple widget to display current position information in a variety of different 
 Tested on simulator for all supported devices and on Forerunner 55 hardware.
 
 Changelog:
+* 3.0.4 - Degrees, DM, and DMS are now visible on Glance View. If another type is selected, degrees will be shown.
+* 3.0.2 - Changed storage mode to work with CIQ 4.0.0 and above.
 * 3.0.1 - Added progress dots animation.
 * 3.0.0 - Initial release as a Widget. For the Application version, see: https://apps.garmin.com/en-US/apps/12097123-2f57-4d59-afd7-2887c54c0732

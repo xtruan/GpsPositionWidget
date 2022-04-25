@@ -1,10 +1,12 @@
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
+using Toybox.Position as Pos;
 
 (:glance)
 class GpsPositionWidget extends App.AppBase {
 
-    hidden var geoFormat;
+    hidden var geoFormat = null;
+    hidden var currentPosInfo = null;
     
     function initialize() {
         AppBase.initialize();
@@ -55,7 +57,8 @@ class GpsPositionWidget extends App.AppBase {
     // set geoFormat var and write to properties
     function setGeoFormat(format) {
         geoFormat = format;
-        setProperty("geo", geoFormatSymbolToNumber(format));
+        App.Storage.setValue("geo", geoFormatSymbolToNumber(format));
+        //setProperty("geo", geoFormatSymbolToNumber(format));
     }
     
     // return current geoFormat
@@ -65,7 +68,8 @@ class GpsPositionWidget extends App.AppBase {
     
     // initialize geoFormat var to current value in properties (called at app startup)
     function initGeoFormat() {
-        var formatNum = getProperty("geo");
+        var formatNum = App.Storage.getValue("geo");
+        //var formatNum = getProperty("geo");
         if (formatNum != null && formatNum != -1) {
             setGeoFormat(geoFormatNumberToSymbol(formatNum));
         } else {
@@ -76,10 +80,22 @@ class GpsPositionWidget extends App.AppBase {
     //! onStart() is called on application start up
     function onStart(state) {
         initGeoFormat();
+        Pos.enableLocationEvents(Pos.LOCATION_CONTINUOUS, method(:onPosition));
     }
 
     //! onStop() is called on application shutdown
     function onStop(state) {
+        Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onPosition));
+    }
+    
+    // position change callback
+    function onPosition(info) {
+        currentPosInfo = info;
+        Ui.requestUpdate();
+    }
+    
+    function getCurrentPosition() {
+        return currentPosInfo;
     }
 
     //! Return the initial view of your application here
