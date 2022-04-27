@@ -79,7 +79,7 @@ class GpsPositionView extends Ui.View {
         string = "Bat: " + battPercent.format("%.1f") + "%";
         pos = pos + Gfx.getFontHeight(Gfx.FONT_TINY) - 4;
         if (isOcto) {
-            dc.drawText( (dc.getWidth() / 3) - 2, pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
+            dc.drawText( (dc.getWidth() / 3) - 2, (dc.getHeight() / 8) - 2, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
         } else {
             dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
         }
@@ -88,16 +88,30 @@ class GpsPositionView extends Ui.View {
             if (progressTimer != null) {
                 progressTimer.stop();
             }
-            if (isMono) {
-                dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
-            } else if (posInfo.accuracy == Pos.QUALITY_GOOD) {
+            
+            var signalStrength = "?";
+            if (posInfo.accuracy == Pos.QUALITY_GOOD) {
                 dc.setColor( Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT );
+                signalStrength = "|||||";
             } else if (posInfo.accuracy == Pos.QUALITY_USABLE) {
                 dc.setColor( Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT );
+                signalStrength = "|||-";
             } else if (posInfo.accuracy == Pos.QUALITY_POOR) {
                 dc.setColor( Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT );
+                signalStrength = "|--";
             } else {
                 dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+                signalStrength = "---";
+            }
+            if (isMono) {
+                dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
+            }
+            if (isOcto) {
+                dc.drawText( dc.getWidth() - (dc.getWidth() / 6) - 1, 
+                             (dc.getHeight() / 8) - 2, 
+                             Gfx.FONT_TINY, 
+                             "Sig: " + signalStrength, 
+                             Gfx.TEXT_JUSTIFY_CENTER );
             }
             
             var formatter = new GpsPositionFormatter(posInfo);
