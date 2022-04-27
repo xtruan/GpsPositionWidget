@@ -6,6 +6,7 @@ using Toybox.Position as Pos;
 (:glance)
 class GpsPositionGlanceView extends Ui.GlanceView {
     
+    const DEG_SIGN = StringUtil.utf8ArrayToString([0xC2,0xB0]); // deg sign
     //hidden var posInfoGlance = null;
     
     function initialize() {
@@ -21,14 +22,14 @@ class GpsPositionGlanceView extends Ui.GlanceView {
     }
     
     function onUpdate(dc) {
-    	// Get position
-    	var posInfoGlance = App.getApp().getCurrentPosition();
-    	
+        // Get position
+        var posInfoGlance = App.getApp().getCurrentPosition();
+        
         // Set background color
         dc.setColor( Gfx.COLOR_TRANSPARENT, Gfx.COLOR_BLACK );
         dc.clear();
         
-        var navStringTop = Ui.loadResource(Rez.Strings.AppName);
+        var navStringTop = "GPS"; //Ui.loadResource(Rez.Strings.AppName);
         var navStringBot = "";
         if (posInfoGlance != null) {
         
@@ -66,22 +67,22 @@ class GpsPositionGlanceView extends Ui.GlanceView {
                 var longDegs = long.toNumber();
                 var longMins = (long - longDegs) * 60;
                 if (geoFormat == :const_dm) {
-                    navStringTop = latHemi + " " + latDegs.format("%i") + " " + latMins.format("%.4f") + "'"; 
-                    navStringBot = longHemi + " " + longDegs.format("%i") + " " + longMins.format("%.4f") + "'";
+                    navStringTop = latHemi + " " + latDegs.format("%i") + DEG_SIGN + " " + latMins.format("%.4f") + "'"; 
+                    navStringBot = longHemi + " " + longDegs.format("%i") + DEG_SIGN + " " + longMins.format("%.4f") + "'";
                     //string = posInfo.position.toGeoString(Pos.GEO_DM);
                 } else { // :const_dms
                     var latMinsInt = latMins.toNumber();
                     var latSecs = (latMins - latMinsInt) * 60;
                     var longMinsInt = longMins.toNumber();
                     var longSecs = (longMins - longMinsInt) * 60;
-                    navStringTop = latHemi + " " + latDegs.format("%i") + " " + latMinsInt.format("%i") + "' " + latSecs.format("%.2f") + "\""; 
-                    navStringBot = longHemi + " " + longDegs.format("%i") + " " + longMinsInt.format("%i") + "' " + longSecs.format("%.2f") + "\"";
+                    navStringTop = latHemi + " " + latDegs.format("%i") + DEG_SIGN + " " + latMinsInt.format("%i") + "' " + latSecs.format("%.2f") + "\""; 
+                    navStringBot = longHemi + " " + longDegs.format("%i") + DEG_SIGN + " " + longMinsInt.format("%i") + "' " + longSecs.format("%.2f") + "\"";
                     //string = posInfo.position.toGeoString(Pos.GEO_DMS);
                 }
             
             } else {
-                navStringTop = latHemi + " " + lat.format("%.6f");
-                navStringBot = longHemi + " " + long.format("%.6f");
+                navStringTop = latHemi + " " + lat.format("%.6f") + DEG_SIGN;
+                navStringBot = longHemi + " " + long.format("%.6f") + DEG_SIGN;
                 //string = posInfo.position.toGeoString(Pos.GEO_DEG);
             }
             
@@ -92,14 +93,14 @@ class GpsPositionGlanceView extends Ui.GlanceView {
                 0, //dc.getWidth() / 2,                 // gets the width of the device and divides by 2
                 (dc.getHeight() / 2) + 2 - Gfx.getFontHeight(Gfx.FONT_TINY), // gets the height of the device and divides by 2
                 Gfx.FONT_TINY,                          // sets the font size
-                navStringTop,                              // the String to display
+                navStringTop,                           // the String to display
                 Gfx.TEXT_JUSTIFY_LEFT                   // sets the justification for the text
             );
             dc.drawText(
                 0, //dc.getWidth() / 2,                 // gets the width of the device and divides by 2
                 (dc.getHeight() / 2) - 2,// + Gfx.getFontHeight(Gfx.FONT_TINY), // gets the height of the device and divides by 2
                 Gfx.FONT_TINY,                          // sets the font size
-                navStringBot,                              // the String to display
+                navStringBot,                           // the String to display
                 Gfx.TEXT_JUSTIFY_LEFT                   // sets the justification for the text
             );
         } else {
@@ -109,7 +110,7 @@ class GpsPositionGlanceView extends Ui.GlanceView {
                 0, //dc.getWidth() / 2,                 // gets the width of the device and divides by 2
                 (dc.getHeight() / 2) - (Gfx.getFontHeight(Gfx.FONT_SMALL) / 2), // gets the height of the device and divides by 2
                 Gfx.FONT_SMALL,                         // sets the font size
-                navStringTop,                              // the String to display
+                navStringTop,                           // the String to display
                 Gfx.TEXT_JUSTIFY_LEFT                   // sets the justification for the text
             );
         }

@@ -5,7 +5,7 @@ using Toybox.Position as Pos;
 (:glance)
 class GpsPositionWidget extends App.AppBase {
 
-    hidden var geoFormat = null;
+    hidden var geoFormat = :const_dms;
     hidden var currentPosInfo = null;
     
     function initialize() {
