@@ -181,14 +181,24 @@ class GpsPositionView extends Ui.View {
                 var degrees = posInfo.position.toDegrees();
                 var swissGrid = new CoordConvSwissGrid();
                 var coords = swissGrid.fromWGSToMN95(degrees[0], degrees[1]);
-                navStringTop = coords[0].format("%i") + " E";
-                navStringBot = coords[1].format("%i") + " N";
+                if (coords.size() == 2) {
+                    navStringTop = coords[0].format("%i") + " E";
+                    navStringBot = coords[1].format("%i") + " N";
+                } else {
+                    navStringTop = coords[0];
+                    navStringBot = "";
+                }
             } else if (geoFormat == :const_sgrlv03) {
                 var degrees = posInfo.position.toDegrees();
                 var swissGrid = new CoordConvSwissGrid();
                 var coords = swissGrid.fromWGSToMN03(degrees[0], degrees[1]);
-                navStringTop = coords[0].format("%i") + " E";
-                navStringBot = coords[1].format("%i") + " N";
+                if (coords.size() == 2) {
+                    navStringTop = coords[0].format("%i") + " E";
+                    navStringBot = coords[1].format("%i") + " N";
+                } else {
+                    navStringTop = coords[0];
+                    navStringBot = "";
+                }
             } else {
                 // invalid format, reset to Degs/Mins/Secs
                 navStringTop = "...";

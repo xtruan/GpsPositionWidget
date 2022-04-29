@@ -53,13 +53,13 @@ class CoordConvSwissGrid {
         var lat = pLat;
         var long = pLong;
         
+//        // Zurich (test)
+//        lat = 47.3769;
+//        long = 8.5417;
+
         if (!inBoundsWGS(lat, long)) {
-           return [-999, -999];
+           return ["OUTSIDE CH"];
         }
-        
-        // Zurich (test)
-//        var lat = 47.3769;
-//        var long = 8.5417;
         
         // [east, north]
         return [fromWGSToMN95East(lat, long), fromWGSToMN95North(lat, long)];
@@ -98,12 +98,13 @@ class CoordConvSwissGrid {
         var lat = pLat;
         var long = pLong;
     
+//        // Zurich (test)
+//        lat = 47.3769;
+//        long = 8.5417;
+    
         if (!inBoundsWGS(lat, long)) {
-           return [-999, -999];
+           return ["OUTSIDE CH"];
         }
-        // Zurich (test)
-//        var lat = 47.3769;
-//        var long = 8.5417;
     
         // [x, y]
         return [fromWGSToMN03x(lat, long), fromWGSToMN03y(lat, long)];
