@@ -177,6 +177,18 @@ class GpsPositionView extends Ui.View {
                 //maidenhead.testGridSquare();
                 navStringTop = "LOC";
                 navStringBot = maidenhead.latLonToGridSquare(degrees[0], degrees[1]);
+            } else if (geoFormat == :const_sgrlv95) {
+                var degrees = posInfo.position.toDegrees();
+                var swissGrid = new CoordConvSwissGrid();
+                var coords = swissGrid.fromWGSToMN95(degrees[0], degrees[1]);
+                navStringTop = coords[0].format("%i") + " E";
+                navStringBot = coords[1].format("%i") + " N";
+            } else if (geoFormat == :const_sgrlv03) {
+                var degrees = posInfo.position.toDegrees();
+                var swissGrid = new CoordConvSwissGrid();
+                var coords = swissGrid.fromWGSToMN03(degrees[0], degrees[1]);
+                navStringTop = coords[0].format("%i") + " E";
+                navStringBot = coords[1].format("%i") + " N";
             } else {
                 // invalid format, reset to Degs/Mins/Secs
                 navStringTop = "...";

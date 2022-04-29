@@ -31,8 +31,11 @@ class GpsPositionWidget extends App.AppBase {
              return 6; // UK Grid (OSGB36)
         } else if (sym == :const_qth) {
              return 7; // Maidenhead Locator / QTH Locator / IARU Locator
-        }
-         else {
+        } else if (sym == :const_sgrlv95) {
+             return 8; // Swiss Grid LV95
+        } else if (sym == :const_sgrlv03) {
+             return 9; // Swiss Grid LV03
+        } else {
             return -1; // Error condition
         }
     }
@@ -56,6 +59,10 @@ class GpsPositionWidget extends App.AppBase {
              return :const_ukgr; // UK Grid (OSGB36)
         } else if (num == 7) {
              return :const_qth;  // Maidenhead Locator / QTH Locator / IARU Locator
+        } else if (num == 8) {
+             return :const_sgrlv95; // Swiss Grid LV95
+        } else if (num == 9) {
+             return :const_sgrlv03; // Swiss Grid LV03
         } else {
              return :const_dms;  // Degs/Mins/Secs (default)
         }
