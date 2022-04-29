@@ -8,6 +8,18 @@ using Toybox.Math as Math;
  */
 
 class CoordConvSwissGrid {
+    
+    function inBoundsWGS(lat, long) {
+        
+        // boundary check
+        if ( lat  > 45.2 &&  lat  < 48.2 &&
+             long >  5.5 &&  long < 11.0 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * Convert the given Swiss (MN95) coordinate points into WGS notation.
      *
@@ -41,8 +53,9 @@ class CoordConvSwissGrid {
         var lat = pLat;
         var long = pLong;
         
-//        long 5.5 to 11
-//        lat 45.2 to 48.2
+        if (!inBoundsWGS(lat, long)) {
+           return [-999, -999];
+        }
         
         // Zurich (test)
 //        var lat = 47.3769;
@@ -85,6 +98,9 @@ class CoordConvSwissGrid {
         var lat = pLat;
         var long = pLong;
     
+        if (!inBoundsWGS(lat, long)) {
+           return [-999, -999];
+        }
         // Zurich (test)
 //        var lat = 47.3769;
 //        var long = 8.5417;

@@ -149,7 +149,7 @@ class CoordConvMaidenhead {
     
         if ((grid.length() != 4) && (grid.length() != 6)) {
             System.println("grid square: grid must be 4 or 6 chars: " + grid);
-            return [999, 999];
+            return [-999, -999];
         }
     
         //if (/^[A-X][A-X][0-9][0-9]$/.test(grid)) {
@@ -164,7 +164,7 @@ class CoordConvMaidenhead {
             lon = lon4(grid) + (1.0 / 60.0) * 5 * (grid.toCharArray()[4] - 'a' + 0.5);
         } else {
             System.println("gridSquareToLatLon: invalid grid: " + grid);
-            return [999, 999];
+            return [-999, -999];
         }
     
         return [lat, lon];
