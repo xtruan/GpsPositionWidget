@@ -35,7 +35,7 @@ class GpsPositionGlanceView extends Ui.GlanceView {
         
             var geoFormat = App.getApp().getGeoFormat();
             if (geoFormat == :const_deg || geoFormat == :const_dm || geoFormat == :const_dms) {
-                var formatter = new GpsPositionFormatter(posInfoGlance);
+                var formatter = new PosInfoFormatter(posInfoGlance);
                 // if decimal degrees, we're done
                 if (geoFormat == :const_deg) {
                     var fDeg = formatter.getDeg();
@@ -53,7 +53,7 @@ class GpsPositionGlanceView extends Ui.GlanceView {
                 }
             } else {
                 // if not a lat/lon format, show MGRS
-                var formatter = new GpsPositionFormatter(posInfoGlance);
+                var formatter = new PosInfoFormatter(posInfoGlance);
                 var fMGRS = formatter.getMGRS();
                 navStringTop = fMGRS[0];
                 navStringBot = fMGRS[1];

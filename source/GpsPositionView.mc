@@ -39,7 +39,7 @@ class GpsPositionView extends Ui.View {
         //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
     }
     //! Restore the state of the app and prepare the view to be shown
-    function onShow() {
+    function onShow() {    
         //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
         deviceSettings = Sys.getDeviceSettings();
         deviceId = Ui.loadResource(Rez.Strings.DeviceId);
@@ -107,14 +107,14 @@ class GpsPositionView extends Ui.View {
                 dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
             }
             if (isOcto) {
-                dc.drawText( dc.getWidth() - (dc.getWidth() / 6) - 1, 
+                dc.drawText( dc.getWidth() - (dc.getWidth() / 6) - 2, 
                              (dc.getHeight() / 8) - 2, 
                              Gfx.FONT_TINY, 
                              "Sig: " + signalStrength, 
                              Gfx.TEXT_JUSTIFY_CENTER );
             }
             
-            var formatter = new GpsPositionFormatter(posInfo);
+            var formatter = new PosInfoFormatter(posInfo);
             var geoFormat = App.getApp().getGeoFormat();
             if (geoFormat == :const_deg || geoFormat == :const_dm || geoFormat == :const_dms) {
                 // if decimal degrees, we're done
@@ -134,7 +134,7 @@ class GpsPositionView extends Ui.View {
                 }
             } else if (geoFormat == :const_utm || geoFormat == :const_usng || geoFormat == :const_mgrs ||geoFormat == :const_ukgr) {
                 var degrees = posInfo.position.toDegrees();
-                var functions = new GpsPositionFunctions();
+                var functions = new CoordConvWGS84Grids();
                 if (geoFormat == :const_utm) {
                     var utmcoords = functions.LLtoUTM(degrees[0], degrees[1]);
                     navStringTop = "" + utmcoords[2] + " " + utmcoords[0];
@@ -165,20 +165,25 @@ class GpsPositionView extends Ui.View {
                             navStringTop = "" + usngcoords[0] + " " + usngcoords[1];
                             navStringBot = "" + usngcoords[2] + " " + usngcoords[3];
                         }
-                        System.println("A: " + navStringTop);
-                        System.println("A: " + navStringBot);
+                        System.println("A: " + navStringTop + " " + navStringBot);
                     }
                     var fMGRS = formatter.getMGRS();
                     navStringTop = fMGRS[0];
                     navStringBot = fMGRS[1];
                 }
+            } else if (geoFormat == :const_qth) {
+                var degrees = posInfo.position.toDegrees();
+                var maidenhead = new CoordConvMaidenhead();
+                //maidenhead.testGridSquare();
+                navStringTop = "LOC";
+                navStringBot = maidenhead.latLonToGridSquare(degrees[0], degrees[1]);
             } else {
                 // invalid format, reset to Degs/Mins/Secs
                 navStringTop = "...";
                 App.getApp().setGeoFormat(:const_dms); // Degs/Mins/Secs
             }
             
-            // display navigation (position) string
+            // display navigation (position) string for non-octo
             if (!isOcto) {
                 pos = displayNavString(dc, pos, navStringTop, navStringBot);
             }
@@ -197,7 +202,17 @@ class GpsPositionView extends Ui.View {
             } else {
                 string = "";
             }
-            string = string + headingDeg.format("%.1f") + formatter.DEG_SIGN; // + " deg";
+            if (geoFormat == :const_mgrs) {
+                // if MGRS, display heading in mil
+                var headingMil = headingDeg * 17.7777778;
+                headingMil = modulo(headingMil + 6400, 6400);
+                headingMil = (headingMil / 10).toNumber() * 10;
+                string = string + headingMil.format("%i") + " mil";
+            } else {
+                // else, display heading in degrees
+                headingDeg = modulo(headingDeg + 360, 360);
+                string = string + headingDeg.format("%i") + formatter.DEG_SIGN; // + " deg";
+            }
             //pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - 2;
             pos = pos + Gfx.getFontHeight(Gfx.FONT_TINY);
             if (isOcto) {
@@ -207,7 +222,7 @@ class GpsPositionView extends Ui.View {
                 dc.drawText( (dc.getWidth() / 2), pos, Gfx.FONT_TINY, string, Gfx.TEXT_JUSTIFY_CENTER );
             }
             
-            // display navigation (position) string
+            // display navigation (position) string for octo
             if (isOcto) {
                 pos = pos + 4;
                 pos = displayNavString(dc, pos, navStringTop, navStringBot);
@@ -286,5 +301,13 @@ class GpsPositionView extends Ui.View {
         }
         pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - Gfx.getFontHeight(Gfx.FONT_TINY);
         return pos;
+    }
+    
+//
+// modulo operation
+//
+    function modulo(a, n) {
+        // a % n
+        return a - (n * (a/n).toNumber());
     }
 }

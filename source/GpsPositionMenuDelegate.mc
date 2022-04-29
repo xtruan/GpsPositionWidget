@@ -23,6 +23,8 @@ class GpsPositionMenuDelegate extends Ui.MenuInputDelegate {
             App.getApp().setGeoFormat(:const_mgrs); // MGRS (WGS84)
         } else if (item == :item_ukgr) {
             App.getApp().setGeoFormat(:const_ukgr); // UK Grid (OSGB36)
+        } else if (item == :item_qth) {
+            App.getApp().setGeoFormat(:const_qth);  // Maidenhead Locator / QTH Locator / IARU Locator
         }
     } 
     

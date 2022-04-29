@@ -8,6 +8,7 @@ Simple widget to display current position information in a variety of different 
 Tested on simulator for all supported devices and on Forerunner 55 hardware.
 
 Changelog:
+* 3.0.9 - Added Maidenhead Locator/QTH Locator/IARU Locator. Heading now displays in mil in MGRS mode.
 * 3.0.8 - GPS signal indicator for Instinct 2/2S.
 * 3.0.7 - Using built-in CIQ function for MGRS. If you notice issues, use USNG format instead. They should be identical. Refactored out GPS formatting into separate class.
 * 3.0.6 - Added degree sign to Degrees, DM, and DMS formats.

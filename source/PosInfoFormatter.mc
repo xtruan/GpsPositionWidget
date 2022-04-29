@@ -1,7 +1,7 @@
 using Toybox.Position as Pos;
 
 (:glance)
-class GpsPositionFormatter {
+class PosInfoFormatter {
 
     // A: comes from app functions
     // B: comes from Garmin functions
@@ -15,7 +15,7 @@ class GpsPositionFormatter {
     hidden var lat = 0.0;
     hidden var latHemi = "?";
     hidden var long = 0.0;
-    hidden var longHemi = "?";     
+    hidden var longHemi = "?";
     
     function initialize(pPosInfo) {
         posInfo = pPosInfo;
@@ -94,15 +94,14 @@ class GpsPositionFormatter {
         }
         // should be 15 characters long, if not, garbage-ify
         if (mgrsString.length() != 15) {
-            mgrsString = "????? MGRSERROR";
+            mgrsString = "BAD   MGRSDATA ";
         }
         var navStringTop = mgrsString.substring( 0,  3)
                    + " " + mgrsString.substring( 3,  5);
         var navStringBot = mgrsString.substring( 5, 10)
                    + " " + mgrsString.substring(10, 15);
         if (DEBUG) {
-            System.println("B: " + navStringTop);
-            System.println("B: " + navStringBot);
+            System.println("B: " + navStringTop + " " + navStringBot);
         }
         return [navStringTop, navStringBot];
     }

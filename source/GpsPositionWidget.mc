@@ -29,7 +29,10 @@ class GpsPositionWidget extends App.AppBase {
              return 5; // MGRS (WGS84)
         } else if (sym == :const_ukgr) {
              return 6; // UK Grid (OSGB36)
-        } else {
+        } else if (sym == :const_qth) {
+             return 7; // Maidenhead Locator / QTH Locator / IARU Locator
+        }
+         else {
             return -1; // Error condition
         }
     }
@@ -49,8 +52,12 @@ class GpsPositionWidget extends App.AppBase {
              return :const_usng; // USNG (WGS84)
         } else if (num == 5) {
              return :const_mgrs; // MGRS (WGS84)
-        } else { // num == 6
+        } else if (num == 6) {
              return :const_ukgr; // UK Grid (OSGB36)
+        } else if (num == 7) {
+             return :const_qth;  // Maidenhead Locator / QTH Locator / IARU Locator
+        } else {
+             return :const_dms;  // Degs/Mins/Secs (default)
         }
     }
     
