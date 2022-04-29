@@ -34,30 +34,10 @@ class GpsPositionGlanceView extends Ui.GlanceView {
         if (posInfoGlance != null) {
         
             var geoFormat = App.getApp().getGeoFormat();
-            if (geoFormat == :const_deg || geoFormat == :const_dm || geoFormat == :const_dms) {
-                var formatter = new PosInfoFormatter(posInfoGlance);
-                // if decimal degrees, we're done
-                if (geoFormat == :const_deg) {
-                    var fDeg = formatter.getDeg();
-                    navStringTop = fDeg[0];
-                    navStringBot = fDeg[1];
-                // do conversions for degs mins or degs mins secs
-                } else if (geoFormat == :const_dm) {
-                    var fDM = formatter.getDM();
-                    navStringTop = fDM[0]; 
-                    navStringBot = fDM[1];
-                } else { // :const_dms
-                    var fDMS = formatter.getDMS();
-                    navStringTop = fDMS[0]; 
-                    navStringBot = fDMS[1];
-                }
-            } else {
-                // if not a lat/lon format, show MGRS
-                var formatter = new PosInfoFormatter(posInfoGlance);
-                var fMGRS = formatter.getMGRS();
-                navStringTop = fMGRS[0];
-                navStringBot = fMGRS[1];
-            }
+            var formatter = new PosInfoFormatter(posInfoGlance);
+            var nav = formatter.format(geoFormat);
+            navStringTop = nav[0];
+            navStringBot = nav[1];
             
             dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
             dc.drawText(

@@ -1,6 +1,7 @@
 using Toybox.Math as Math;
 using Toybox.System as Sys;
 
+(:glance)
 class CoordConvWGS84Grids {
 
 /// CoordConvWGS84Grids.mc by Struan Clark (2015)

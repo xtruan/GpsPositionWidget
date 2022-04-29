@@ -1,5 +1,8 @@
 using Toybox.Math as Math;
 
+(:glance)
+class CoordConvMaidenhead {
+
 /// CoordConvMaidenhead.mc by Struan Clark (2022)
 /// Major components translated to Monkey C from JavaScript library HamGridSquare.js
 
@@ -33,8 +36,6 @@ using Toybox.Math as Math;
  * 
  * Returns a 6-character maidenhead locator string (e.g. `FN43rq`)
  */
- 
-class CoordConvMaidenhead {
 
     function gridForLatLon(latitude, longitude) {
         var UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWX";

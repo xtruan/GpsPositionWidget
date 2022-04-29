@@ -12,10 +12,10 @@ class GpsPositionView extends Ui.View {
     hidden var deviceSettings = null;
     hidden var deviceId = null;
     hidden var showLabels = true;
-    hidden var progressTimer = null;
-    hidden var progressDots = "";
     hidden var isMono = false;
     hidden var isOcto = false;
+    hidden var progressTimer = null;
+    hidden var progressDots = "";
     
     function initialize() {
         View.initialize();
@@ -114,106 +114,16 @@ class GpsPositionView extends Ui.View {
                              Gfx.TEXT_JUSTIFY_CENTER );
             }
             
-            var formatter = new PosInfoFormatter(posInfo);
             var geoFormat = App.getApp().getGeoFormat();
-            if (geoFormat == :const_deg || geoFormat == :const_dm || geoFormat == :const_dms) {
-                // if decimal degrees, we're done
-                if (geoFormat == :const_deg) {
-                    var fDeg = formatter.getDeg();
-                    navStringTop = fDeg[0];
-                    navStringBot = fDeg[1];
-                // do conversions for degs mins or degs mins secs
-                } else if (geoFormat == :const_dm) {
-                    var fDM = formatter.getDM();
-                    navStringTop = fDM[0]; 
-                    navStringBot = fDM[1];
-                } else { // :const_dms
-                    var fDMS = formatter.getDMS();
-                    navStringTop = fDMS[0]; 
-                    navStringBot = fDMS[1];
-                }
-            } else if (geoFormat == :const_utm || geoFormat == :const_usng || geoFormat == :const_mgrs ||geoFormat == :const_ukgr) {
-                var degrees = posInfo.position.toDegrees();
-                var functions = new CoordConvWGS84Grids();
-                if (geoFormat == :const_utm) {
-                    var utmcoords = functions.LLtoUTM(degrees[0], degrees[1]);
-                    navStringTop = "" + utmcoords[2] + " " + utmcoords[0];
-                    navStringBot = "" + utmcoords[1];
-                } else if (geoFormat == :const_usng) {
-                    var usngcoords = functions.LLtoUSNG(degrees[0], degrees[1], 5);
-                    if (usngcoords[1].length() == 0 || usngcoords[2].length() == 0 || usngcoords[3].length() == 0) {
-                        navStringTop = "" + usngcoords[0]; // error message
-                    } else {
-                        navStringTop = "" + usngcoords[0] + " " + usngcoords[1];
-                        navStringBot = "" + usngcoords[2] + " " + usngcoords[3];
-                    }
-                } else if (geoFormat == :const_ukgr) {
-                    var ukgrid = functions.LLToOSGrid(degrees[0], degrees[1]);
-                    if (ukgrid[1].length() == 0 || ukgrid[2].length() == 0) {
-                        navStringTop = ukgrid[0]; // error message
-                    } else {
-                        navStringTop = "" + ukgrid[0] + " " + ukgrid[1];
-                        navStringBot =  "" + ukgrid[2];
-                    }
-                } else { // :const_mgrs
-                    if (formatter.DEBUG) {
-                        // do USNG for debugging since it's using the correct datum to be equivalent to MGRS
-                        var usngcoords = functions.LLtoUSNG(degrees[0], degrees[1], 5);
-                        if (usngcoords[1].length() == 0 || usngcoords[2].length() == 0 || usngcoords[3].length() == 0) {
-                            navStringTop = "" + usngcoords[0]; // error message
-                        } else {
-                            navStringTop = "" + usngcoords[0] + " " + usngcoords[1];
-                            navStringBot = "" + usngcoords[2] + " " + usngcoords[3];
-                        }
-                        System.println("A: " + navStringTop + " " + navStringBot);
-                    }
-                    var fMGRS = formatter.getMGRS();
-                    navStringTop = fMGRS[0];
-                    navStringBot = fMGRS[1];
-                }
-            } else if (geoFormat == :const_qth) {
-                var degrees = posInfo.position.toDegrees();
-                var maidenhead = new CoordConvMaidenhead();
-                //maidenhead.testGridSquare();
-                navStringTop = "LOC";
-                navStringBot = maidenhead.latLonToGridSquare(degrees[0], degrees[1]);
-            } else if (geoFormat == :const_sgrlv95) {
-                var degrees = posInfo.position.toDegrees();
-                var swissGrid = new CoordConvSwissGrid();
-                var coords = swissGrid.fromWGSToMN95(degrees[0], degrees[1]);
-                if (coords.size() == 2) {
-                    navStringTop = coords[0].format("%i") + " E";
-                    navStringBot = coords[1].format("%i") + " N";
-                } else {
-                    navStringTop = coords[0];
-                    navStringBot = "";
-                }
-            } else if (geoFormat == :const_sgrlv03) {
-                var degrees = posInfo.position.toDegrees();
-                var swissGrid = new CoordConvSwissGrid();
-                var coords = swissGrid.fromWGSToMN03(degrees[0], degrees[1]);
-                if (coords.size() == 2) {
-                    navStringTop = coords[0].format("%i") + " E";
-                    navStringBot = coords[1].format("%i") + " N";
-                } else {
-                    navStringTop = coords[0];
-                    navStringBot = "";
-                }
-            } else {
-                // invalid format, reset to Degs/Mins/Secs
-                navStringTop = "...";
-                App.getApp().setGeoFormat(:const_dms); // Degs/Mins/Secs
-            }
+            var formatter = new PosInfoFormatter(posInfo);
+            var nav = formatter.format(geoFormat);
+            navStringTop = nav[0];
+            navStringBot = nav[1];
             
             // display navigation (position) string for non-octo
             if (!isOcto) {
-                pos = displayNavString(dc, pos, navStringTop, navStringBot);
+                pos = drawNavString(dc, pos, navStringTop, navStringBot);
             }
-            
-            // draw border around position
-            //dc.setColor( Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT );
-            //dc.drawLine(0, (dc.getHeight() / 2) - 62, dc.getWidth(), (dc.getHeight() / 2) - 62);
-            //dc.drawLine(0, (dc.getHeight() / 2) - 18, dc.getWidth(), (dc.getHeight() / 2) - 18);
             
             // display heading
             dc.setColor( Gfx.COLOR_WHITE, Gfx.COLOR_TRANSPARENT );
@@ -247,7 +157,7 @@ class GpsPositionView extends Ui.View {
             // display navigation (position) string for octo
             if (isOcto) {
                 pos = pos + 4;
-                pos = displayNavString(dc, pos, navStringTop, navStringBot);
+                pos = drawNavString(dc, pos, navStringTop, navStringBot);
                 pos = pos + 2;
             }
             
@@ -307,7 +217,7 @@ class GpsPositionView extends Ui.View {
         
     }
     
-    function displayNavString(dc, screenPos, navStringTop, navStringBot) {
+    function drawNavString(dc, screenPos, navStringTop, navStringBot) {
         // display navigation (position) string
         var pos = screenPos;
         if (navStringBot.length() != 0) {

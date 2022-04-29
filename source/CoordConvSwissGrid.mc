@@ -1,13 +1,14 @@
 using Toybox.Math as Math;
 
+(:glance)
+class CoordConvSwissGrid {
+
 /// CoordConvSwissGrid.mc by Struan Clark (2022)
 /// Major components translated to Monkey C from PHP library SwisstopoConverter.php
 
 /**
  * Convert GPS (WGS84) to Swiss (LV03 or LV95) coordinates - and vice versa.
  */
-
-class CoordConvSwissGrid {
     
     function inBoundsWGS(lat, long) {
         
