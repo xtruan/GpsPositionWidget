@@ -94,12 +94,65 @@ class GpsPositionWidget extends App.AppBase {
     //! onStart() is called on application start up
     function onStart(state) {
         initGeoFormat();
-        Pos.enableLocationEvents(Pos.LOCATION_CONTINUOUS, method(:onPosition));
+        startPositioning();
     }
-
-    //! onStop() is called on application shutdown
-    function onStop(state) {
-        Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onPosition));
+    
+    function startPositioning() {
+        var deviceSettings = System.getDeviceSettings();
+        var ver = deviceSettings.monkeyVersion;
+        // custom constellations only in CIQ >= 3.2.0
+        if ( ver != null && ver[0] != null && ver[1] != null && 
+            ( (ver[0] == 3 && ver[1] >= 2) || ver[0] > 3 ) ) {
+            if (enablePositioningWithConstellations([
+                    Pos.CONSTELLATION_GPS,
+                    Pos.CONSTELLATION_GLONASS, 
+                    Pos.CONSTELLATION_GALILEO
+            ])) {
+                System.println("Constellations: GPS/GLO/GAL");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Pos.CONSTELLATION_GPS,
+                    Pos.CONSTELLATION_GLONASS
+            ])) {
+                System.println("Constellations: GPS/GLO");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Pos.CONSTELLATION_GPS,
+                    Pos.CONSTELLATION_GALILEO,
+            ])) {
+                System.println("Constellations: GPS/GAL");
+                return true;
+            }
+            if (enablePositioningWithConstellations([
+                    Pos.CONSTELLATION_GPS
+            ])) {
+                System.println("Constellation: GPS");
+                return true;
+            }
+        } else {
+            Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
+            System.println("Constellation: GPS (Legacy Mode)");
+        }
+        return true;
+    }
+    
+    function enablePositioningWithConstellations(constellations) {
+        var success = false;
+        try {
+            Pos.enableLocationEvents({
+                    :acquisitionType => Pos.LOCATION_CONTINUOUS,
+                    :constellations => constellations
+                },
+                method(:onPosition)
+            );
+            success = true;
+        } catch (ex) {
+            System.println(ex.getErrorMessage() + ": " + constellations.toString());
+            success = false;
+        }
+        return success;
     }
     
     // position change callback
@@ -110,6 +163,11 @@ class GpsPositionWidget extends App.AppBase {
     
     function getCurrentPosition() {
         return currentPosInfo;
+    }
+    
+    //! onStop() is called on application shutdown
+    function onStop(state) {
+        Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onPosition));
     }
 
     //! Return the initial view of your application here
