@@ -6,7 +6,7 @@ using Toybox.Position as Pos;
 (:glance)
 class GpsPositionGlanceView extends Ui.GlanceView {
     
-    const DEG_SIGN = StringUtil.utf8ArrayToString([0xC2,0xB0]); // deg sign
+    //const DEG_SIGN = StringUtil.utf8ArrayToString([0xC2,0xB0]); // deg sign
     //hidden var posInfoGlance = null;
     
     function initialize() {
@@ -14,10 +14,12 @@ class GpsPositionGlanceView extends Ui.GlanceView {
     }
     
     function onHide() {
+        App.getApp().stopPositioning();
         //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPositionGlance));
     }
     
     function onShow() {
+        App.getApp().startPositioning();
         //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPositionGlance));
     }
     
@@ -35,6 +37,12 @@ class GpsPositionGlanceView extends Ui.GlanceView {
         
             var geoFormat = App.getApp().getGeoFormat();
             var formatter = new PosInfoFormatter(posInfoGlance);
+            
+            // Swiss Grid not available because of memory limitations in glance
+            if (geoFormat == :const_sgrlv95 || geoFormat == :const_sgrlv03) {
+                geoFormat = :const_mgrs;
+            }
+            
             var nav = formatter.format(geoFormat);
             navStringTop = nav[0];
             navStringBot = nav[1];

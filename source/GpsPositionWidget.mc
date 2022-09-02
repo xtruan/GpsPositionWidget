@@ -102,7 +102,8 @@ class GpsPositionWidget extends App.AppBase {
     //! onStart() is called on application start up
     function onStart(state) {
         initGeoFormat();
-        startPositioning();
+        // startPositioning() call moved to Views
+        //startPositioning();
     }
     
     function startPositioning() {
@@ -163,6 +164,10 @@ class GpsPositionWidget extends App.AppBase {
         return success;
     }
     
+    function stopPositioning() {
+        Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onPosition));
+    }
+    
     // position change callback
     function onPosition(info) {
         currentPosInfo = info;
@@ -175,7 +180,8 @@ class GpsPositionWidget extends App.AppBase {
     
     //! onStop() is called on application shutdown
     function onStop(state) {
-        Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onPosition));
+        // stopPositioning() call moved to Views
+        //stopPositioning();
     }
 
     //! Return the initial view of your application here

@@ -37,10 +37,12 @@ class GpsPositionView extends Ui.View {
 
     function onHide() {
         //Pos.enableLocationEvents(Position.LOCATION_DISABLE, method(:onPosition));
+        App.getApp().stopPositioning();
     }
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {    
         //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
+        App.getApp().startPositioning();
         deviceSettings = Sys.getDeviceSettings();
         deviceId = Ui.loadResource(Rez.Strings.DeviceId);
         isOcto = deviceId != null && deviceId.equals("octo");
@@ -143,7 +145,11 @@ class GpsPositionView extends Ui.View {
             } else {
                 // else, display heading in degrees
                 headingDeg = modulo(headingDeg + 360, 360);
-                string = string + headingDeg.format("%i") + formatter.DEG_SIGN; // + " deg";
+                var degSign = formatter.DEG_SIGN;
+                if (degSign.length() == 0) {
+                   degSign = " deg";
+                }
+                string = string + headingDeg.format("%i") + degSign;
             }
             //pos = pos + Gfx.getFontHeight(Gfx.FONT_MEDIUM) - 2;
             pos = pos + Gfx.getFontHeight(Gfx.FONT_TINY);
