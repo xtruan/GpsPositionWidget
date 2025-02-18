@@ -19,8 +19,8 @@ class GpsPositionGlanceView extends Ui.GlanceView {
     }
     
     function onShow() {
-        App.getApp().startPositioning();
-        //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPositionGlance));
+        App.getApp().startPositioning(Pos.LOCATION_ONE_SHOT);
+        //Pos.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onPositionGlance));
     }
     
     function onUpdate(dc) {

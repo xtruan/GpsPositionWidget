@@ -22,6 +22,7 @@ Color of position text indicates GPS signal strength. Color of battery text indi
 Tested on simulator for all supported devices and on Forerunner 55 hardware.
 
 Changelog:
+* 3.4.0 - Updated GPS logic. Added support for Instinct 3 series.
 * 3.2.0 - Added support for Edge/Handheld devices. Fixed glance memory issue.
 * 3.1.5 - Degree symbol display fix.
 * 3.1.4 - Added SK-42 formats.

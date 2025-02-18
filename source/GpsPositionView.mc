@@ -42,7 +42,7 @@ class GpsPositionView extends Ui.View {
     //! Restore the state of the app and prepare the view to be shown
     function onShow() {    
         //Pos.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
-        App.getApp().startPositioning();
+        App.getApp().startPositioning(Pos.LOCATION_CONTINUOUS);
         deviceSettings = Sys.getDeviceSettings();
         deviceId = Ui.loadResource(Rez.Strings.DeviceId);
         isOcto = deviceId != null && deviceId.equals("octo");
